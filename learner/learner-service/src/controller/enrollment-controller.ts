@@ -63,15 +63,16 @@ const GetAllEnrollments = async (req: Request, res: Response) => {
   }
 };
 
-const GetEnrollmentProfiles = async (req: Request, res: Response) => {
+const GetOneEnrollment = async (req: Request, res: Response) => {
   try {
-    const profiles = await EnrollmentService.getEnrollmentProfiles();
+    const enrollmentId = req.params.enrollmentId; // Assuming you're getting the enrollment ID from the request params
+    const enrollment = await EnrollmentService.getOneEnrollment(enrollmentId); // Call the service method to get one enrollment
     CustomResponse(
       res,
       true,
       HttpStatusCodes.OK,
-      "Enrollment profiles fetched successfully!",
-      profiles
+      "Enrollment fetched successfully!",
+      enrollment
     );
   } catch (error: unknown) {
     if (error instanceof Error) {
@@ -79,7 +80,7 @@ const GetEnrollmentProfiles = async (req: Request, res: Response) => {
         res,
         false,
         HttpStatusCodes.INTERNAL_SERVER_ERROR,
-        "Failed to fetch enrollment profiles",
+        "Failed to fetch enrollment",
         error.message
       );
     } else {
@@ -88,6 +89,32 @@ const GetEnrollmentProfiles = async (req: Request, res: Response) => {
     }
   }
 };
+
+// const GetEnrollmentProfiles = async (req: Request, res: Response) => {
+//   try {
+//     const profiles = await EnrollmentService.getEnrollmentProfiles();
+//     CustomResponse(
+//       res,
+//       true,
+//       HttpStatusCodes.OK,
+//       "Enrollment profiles fetched successfully!",
+//       profiles
+//     );
+//   } catch (error: unknown) {
+//     if (error instanceof Error) {
+//       CustomResponse(
+//         res,
+//         false,
+//         HttpStatusCodes.INTERNAL_SERVER_ERROR,
+//         "Failed to fetch enrollment profiles",
+//         error.message
+//       );
+//     } else {
+//       // Handle other types of errors if needed
+//       console.error("An unknown error occurred:", error);
+//     }
+//   }
+// };
 
 const DeleteEnrollmentDetails = async (req: Request, res: Response) => {
   try {
@@ -116,4 +143,19 @@ const DeleteEnrollmentDetails = async (req: Request, res: Response) => {
   }
 };
 
-export { CreateEnrollment, GetAllEnrollments, GetEnrollmentProfiles, DeleteEnrollmentDetails };
+const GetEnrollmentsByUserId = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const enrollments = await EnrollmentService.getEnrollmentsByUserId(userId);
+    CustomResponse(res, true, HttpStatusCodes.OK, 'Enrollments fetched successfully!', enrollments);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      CustomResponse(res, false, HttpStatusCodes.INTERNAL_SERVER_ERROR, 'Failed to fetch enrollments by user ID', error.message);
+    } else {
+      // Handle other types of errors if needed
+      console.error('An unknown error occurred:', error);
+    }
+  }
+};
+
+export { CreateEnrollment, GetAllEnrollments, GetOneEnrollment, DeleteEnrollmentDetails, GetEnrollmentsByUserId };

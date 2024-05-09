@@ -25,12 +25,21 @@ class EnrollmentService {
     }
   }
 
-  static async getEnrollmentProfiles(): Promise<any> {
-    // Implement the logic to fetch enrollment profiles
-    // You might need to add additional fields or perform data manipulation
-    const enrollments = await Enrollment.find();
-    return enrollments;
+  static async getOneEnrollment(enrollmentId: string): Promise<any> {
+    try {
+      const enrollment = await Enrollment.findById(enrollmentId);
+      return enrollment;
+    } catch (error) {
+      throw new Error('Failed to fetch enrollment');
+    }
   }
+
+  // static async getEnrollmentProfiles(): Promise<any> {
+  //   // Implement the logic to fetch enrollment profiles
+  //   // You might need to add additional fields or perform data manipulation
+  //   const enrollments = await Enrollment.find();
+  //   return enrollments;
+  // }
 
   static async deleteEnrollmentDetails(enrollmentId: string): Promise<any> {
     try {
@@ -38,6 +47,15 @@ class EnrollmentService {
       return result;
     } catch (error) {
       throw new Error('Failed to delete enrollment');
+    }
+  }
+
+  static async getEnrollmentsByUserId(userId: string): Promise<any> {
+    try {
+      const enrollments = await Enrollment.find({ userId });
+      return enrollments;
+    } catch (error) {
+      throw new Error('Failed to fetch enrollments by user ID');
     }
   }
 }
